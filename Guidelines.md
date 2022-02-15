@@ -50,9 +50,74 @@ samtools view -b -f 2 -F 268 \
 
 ```
 samtools sort -T prefix.pairs.unique.bam \
-> prefix.sorted.pairs.unique.bam \
-2>> prefix.log
+  > prefix.sorted.pairs.unique.bam \
+  2>> prefix.log
 ```
 
-N.B.: tu constateras que cette opération sera effectuée ponctuellement durant l'analyse. En effet, le *sorting* (tri) du fichier Bam peut-être nécessaire avant d'utiliser certains programmes.
+N.B.: tu constateras que cette opération sera effectuée ponctuellement durant l'analyse. En effet, le *sorting* (tri) du fichier Bam peut être nécessaire avant d'utiliser certains programmes.
+
+### Keeping the "good" chromosomes
+
+```
+samtools index prefix.sorted.pairs.unique.bam
+samtools idxstats prefix.sorted.pairs.unique.bam |gawk '{if($1!="*"){print}}'|cut -f 1| \
+   grep "chr"|grep -v "chrUn\|chrM\|random"| \
+   xargs samtools view -b prefix.sorted.pairs.unique.bam \
+   > $FULL_PATH_RES/prefix.noMTorRandom.pairs.unique.bam
+   2>> prefix.log
+```
+
+## Filtrage(s) des "duplicates"
+
+Comme je te le disais hier, je fais ça en deux fois pour plus d'efficacité.
+
+### First duplicate removal step using samtools
+
+```
+samtools collate -o prefix.namecollate.noMTorRandom.pairs.unique.bam prefix.noMTorRandom.pairs.unique.bam
+samtools fixmate -m prefix.namecollate.noMTorRandom.pairs.unique.bam prefix.noMTorRandom.pairs.unique.mrk1.bam
+samtools sort -o prefix.noMTorRandom.pairs.unique.sorted.mrk1.bam prefix.noMTorRandom.pairs.unique.mrk1.bam 2>/dev/null
+samtools markdup -r -s prefix.noMTorRandom.pairs.unique.sorted.mrk1.bam prefix.noDup1.noMTorRandom.pairs.unique.bam 2>> prefix.log
+```
+
+### Marking duplicates with Picard
+
+**ATTENTION:** il va falloir que nous installions *Picard* dans ton répertoire *bin* local pour que ça fonctionne!
+
+```
+java -jar $PICARD_FOLDER/picard.jar MarkDuplicates \
+	I=prefix.noDup1.noMTorRandom.pairs.unique.bam \
+	O=prefix.noDup1.noMTorRandom.pairs.unique.mrk2.bam \
+	M=prefix.picard_marked_dup_metrics.txt \
+	AS=TRUE 2>> prefix.log
+```
+
+### Removing Picard (or second) duplicates with Samtools
+
+```
+samtools view -b -F 0x400 \
+	$FULL_PATH_RES/$PREFIX.noDup1.noMTorRandom.pairs.unique.mrk2.bam \
+	-o $FULL_PATH_RES/$PREFIX.noDup2.noMTorRandom.pairs.unique.bam \
+	2>> prefix.log
+```
+
+## Dernier filtrage: ne garder que les reads alignés de qualité "MAPQ > 30"
+
+J'ai préféré faire ce filtrage car il sera plus facile de l'éviter si la qualité de tes reads n'est pas top mais que tu veux quand même tenter l'analyse.
+Tu peux d'ailleurs chosir de baisser un peu la qualité en changeant la valeur après le paramètre `-q`.
+
+```
+samtools view -b -q 30 \
+	prefix.noDup2.noMTorRandom.pairs.unique.bam \
+	-o prefix.MAPQ30.noDup2.noMTorRandom.pairs.unique.bam \
+	2>> prefix.log
+```
+
+## Renommage et Indexage du Bam final
+ 
+```
+mv prefix.MAPQ30.noDup2.noMTorRandom.pairs.unique.bam prefix.analyzed.bam
+samtools index prefix.analyzed.bam 2>> prefix.log
+```
+
 
