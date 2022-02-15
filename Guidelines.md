@@ -9,7 +9,7 @@ La ligne de commande:
 
 N.B.: par *prefix*, j'entends la partie spécifique à ton experience du nom de ton fichier. 
 
-Link: https://github.com/OpenGene/fastp
+Lien: https://github.com/OpenGene/fastp
 
 ## 2. Alignement sur génome de référence
 
@@ -67,7 +67,7 @@ samtools idxstats prefix.sorted.pairs.unique.bam |gawk '{if($1!="*"){print}}'|cu
    2>> prefix.log
 ```
 
-## Filtrage(s) des "duplicates"
+## 4. Filtrage(s) des "duplicates"
 
 Comme je te le disais hier, je fais ça en deux fois pour plus d'efficacité.
 
@@ -101,7 +101,11 @@ samtools view -b -F 0x400 \
 	2>> prefix.log
 ```
 
-## Dernier filtrage: ne garder que les reads alignés de qualité "MAPQ > 30"
+Liens:
+- http://www.htslib.org/
+- https://broadinstitute.github.io/picard/
+
+## 5. Dernier filtrage: ne garder que les reads alignés de qualité "MAPQ > 30"
 
 J'ai préféré faire ce filtrage car il sera plus facile de l'éviter si la qualité de tes reads n'est pas top mais que tu veux quand même tenter l'analyse.
 Tu peux d'ailleurs chosir de baisser un peu la qualité en changeant la valeur après le paramètre `-q`.
@@ -113,11 +117,52 @@ samtools view -b -q 30 \
 	2>> prefix.log
 ```
 
-## Renommage et Indexage du Bam final
+## 6. Renommage et Indexage du Bam final
  
 ```
 mv prefix.MAPQ30.noDup2.noMTorRandom.pairs.unique.bam prefix.analyzed.bam
 samtools index prefix.analyzed.bam 2>> prefix.log
 ```
 
+## 7. Génération d'un fichier graph de type *bigWig* (plus léger que le Bam)
 
+Différents outils peuvent te permettre ça, mais perso je te conseille d'utiliser les *deepTools* que j'aprrécie particulièrement.
+Les paramètres comme `--binSize` et `--smoothLength' te permetttront de jouer sur la résolution du graphe. Je te laisse consulter la doc des *deepTools* si tu souhaites modifier ces paramètres.
+
+```
+bamCoverage \
+	--bam prefix.analyzed.bam \
+	--outFileFormat bigwig \
+	--outFileName prefix.analyzed.bw \
+	--binSize 20 \
+	--smoothLength 60 \
+	--normalizeUsing RPKM \
+	--effectiveGenomeSize 142573017\
+	--numberOfProcessors 8 \
+	2>> prefix.log
+```
+
+Lien: https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
+
+## 8. "Peakcalling" avec MACS2
+
+Encore une fois je te renvoie aux liens que j'ajoute à la fin de ce paragraphe pour plus de détails sur le model mis au point et les paramètres sue lesquels tu peux jouer. Il manque un paramètre `-c` après lequel il faudrait ajouter le nom du fichier *Input* que tu n'as pas pour l'instant.
+
+Perso, je l'utilise comme ceci:
+
+```
+macs2 callpeak \
+	-t prefix.analyzed.bam \
+	-f BAMPE \
+	-n prefix \
+	-g 142573017 \
+	-p 1e-7 \
+	--keep-dup all \
+	2>> prefix.log
+```
+
+Les fichiers résulats vont tous débuter encore une fois par "*préfix*".
+
+Liens:
+- https://github.com/macs3-project/MACS
+- https://hbctraining.github.io/Intro-to-ChIPseq/lessons/05_peak_calling_macs.html
