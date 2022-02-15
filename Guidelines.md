@@ -56,7 +56,7 @@ samtools sort -T prefix.pairs.unique.bam \
   2>> prefix.log
 ```
 
-N.B.: tu constateras que cette opération sera effectuée ponctuellement durant l'analyse. En effet, le *sorting* (tri) du fichier Bam peut être nécessaire avant d'utiliser certains programmes.
+N.B.: Le *sorting* (tri) du fichier Bam peut être nécessaire avant d'utiliser certains programmes.
 
 ### Keeping the "good" chromosomes
 
