@@ -98,8 +98,8 @@ java -jar $PICARD_FOLDER/picard.jar MarkDuplicates \
 
 ```
 samtools view -b -F 0x400 \
-	$FULL_PATH_RES/$PREFIX.noDup1.noMTorRandom.pairs.unique.mrk2.bam \
-	-o $FULL_PATH_RES/$PREFIX.noDup2.noMTorRandom.pairs.unique.bam \
+	prefix.noDup1.noMTorRandom.pairs.unique.mrk2.bam \
+	-o prefix.noDup2.noMTorRandom.pairs.unique.bam \
 	2>> prefix.log
 ```
 
