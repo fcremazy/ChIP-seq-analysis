@@ -4,7 +4,6 @@
 
 Je te conseille d'utiliser *fastp* pour ça.
 
-La ligne de commande:
 `fastp -A -h prefix_qc.html -i prefix_reads1.fastq.gz -I prefix_reads2.fastq.gz`
 
 N.B.: par *prefix*, j'entends la partie spécifique à ton experience du nom de ton fichier. 
