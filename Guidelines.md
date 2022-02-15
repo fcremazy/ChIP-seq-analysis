@@ -9,7 +9,7 @@ La ligne de commande:
 
 N.B.: par *prefix*, j'entends la partie spécifique à ton experience du nom de ton fichier. 
 
-Lien: https://github.com/OpenGene/fastp
+**Lien:** https://github.com/OpenGene/fastp
 
 ## 2. Alignement sur génome de référence
 
@@ -30,6 +30,8 @@ bowtie2 \
 N.B.:
 - le caractère `\` permet de continuer la commande sur la ligne suivante. Tu peux aussi mettre tout à la suite sur la même ligne.
 - la partie `2> prefix.log` permet de rediriger toutes les informations affichées à l'écran durant l'executions des différents programmes que tu vas utiliser vers un fichier "*log*" que tu pourras consulter tranquillement plus tard s'il y a un problème. Par la suite, il faudra utiliser `2>> prefix.log` par la suite afin que les nouvelles infos soient ajoutées à la suite du fichier déjà existant.
+
+**Lien:** http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 
 ## 3. Conversion de Sam en Bam et filtrages de l'alignement
 
@@ -101,7 +103,7 @@ samtools view -b -F 0x400 \
 	2>> prefix.log
 ```
 
-Liens:
+**Liens:**
 - http://www.htslib.org/
 - https://broadinstitute.github.io/picard/
 
@@ -142,7 +144,7 @@ bamCoverage \
 	2>> prefix.log
 ```
 
-Lien: https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
+**Lien:** https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
 
 ## 8. "Peakcalling" avec MACS2
 
@@ -163,6 +165,6 @@ macs2 callpeak \
 
 Les fichiers résulats vont tous débuter encore une fois par "*préfix*".
 
-Liens:
+**Liens:**
 - https://github.com/macs3-project/MACS
 - https://hbctraining.github.io/Intro-to-ChIPseq/lessons/05_peak_calling_macs.html
