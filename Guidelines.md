@@ -130,7 +130,7 @@ samtools index prefix.analyzed.bam 2>> prefix.log
 ## 7. Génération d'un fichier graph de type *bigWig* (plus léger que le Bam)
 
 Différents outils peuvent te permettre ça, mais perso je te conseille d'utiliser les *deepTools* que j'aprrécie particulièrement.
-Les paramètres comme `--binSize` et `--smoothLength' te permetttront de jouer sur la résolution du graphe. Je te laisse consulter la doc des *deepTools* si tu souhaites modifier ces paramètres.
+Les paramètres comme `--binSize` et `--smoothLength` te permetttront de jouer sur la résolution du graphe. Je te laisse consulter la doc des *deepTools* si tu souhaites modifier ces paramètres.
 
 ```
 bamCoverage \
