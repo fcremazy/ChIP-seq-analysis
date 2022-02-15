@@ -13,6 +13,8 @@ N.B.: par *prefix*, j'entends la partie spécifique à ton experience du nom de 
 ## 2. Alignement sur génome de référence
 
 Comme souvent il y a différentes alternatives mais *bowtie* reste le plus utilisé.
+Il faudrait que tu passes me voir pour l'indexage du génome *Dm6*.
+
 La commande que j'utilise pour nos analyses est la suivante:
 
 ```
