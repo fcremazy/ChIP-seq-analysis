@@ -66,7 +66,7 @@ samtools index prefix.sorted.pairs.unique.bam
 samtools idxstats prefix.sorted.pairs.unique.bam |gawk '{if($1!="*"){print}}'|cut -f 1| \
    grep "chr"|grep -v "chrUn\|chrM\|random"| \
    xargs samtools view -b prefix.sorted.pairs.unique.bam \
-   > $FULL_PATH_RES/prefix.noMTorRandom.pairs.unique.bam
+   > prefix.noMTorRandom.pairs.unique.bam
    2>> prefix.log
 ```
 
